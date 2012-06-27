@@ -1,5 +1,6 @@
 require("World")
 require("Renderer")
+require("Input")
 
 function love.load()
 	love.graphics.setBackgroundColor(148,205,255)
@@ -8,7 +9,7 @@ end
 
 function love.update(dt)
 	World:update(dt)
-	Player:update(dt)
+	Input:update(World)
 end
 
 function love.draw()
@@ -17,4 +18,3 @@ end
 
 function love.keypressed(key, unicode)
 end
-
