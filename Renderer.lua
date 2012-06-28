@@ -1,10 +1,12 @@
 require ("AnAL")
 require ("Assets")
-
+require ("TiledMapLoader")
 Renderer = {}
 
 function Renderer:render(world)
 	
+	TiledMap_DrawNearCam(love.graphics.getWidth()/2, love.graphics.getHeight()/2)
+
 	player = world.player
 	pPos = player.position
 	pAnim = Assets.animPlayerRun
