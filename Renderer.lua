@@ -1,6 +1,7 @@
 require ("AnAL")
 require ("Assets")
 require ("TiledMapLoader")
+
 Renderer = {}
 
 function Renderer:render(world)

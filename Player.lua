@@ -3,7 +3,7 @@ require ("class")
 
 Player = inheritsFrom(Actor)
 Player.SPEED = 160
-Player.JUMP_POWER = 350
+Player.JUMP_POWER = 400
 
 function Player:update(dt)
 	self:checkCollisions()
@@ -37,4 +37,8 @@ function Player:jump()
 		self.velocity.y = -self.JUMP_POWER
 		self.jumping = true
 	end
+end
+
+function Player:getBBox()
+	return self.position.x + 12, self.position.y + 9, 24, 39
 end
