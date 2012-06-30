@@ -1,25 +1,33 @@
 require ("Actor")
 require ("class")
 
-Player = inheritsFrom(Actor)
-Player.SPEED = 160
-Player.JUMP_POWER = 400
+Player = {}
+setmetatable(Player, {__index = Actor})
+Player.SPEED = 180
+Player.JUMP_POWER = 500
 
-function Player:update(dt)
-	self:checkCollisions()
-
-	self.position.x = self.position.x + self.velocity.x * dt
-	self.position.y = self.position.y + self.velocity.y * dt	
+local function sign(x)
+	return x < 0 and -1 or (x>0 and 1 or 0)
 end
 
-function Player:checkCollisions()
-	-- ground
-	local groundH = love.graphics.getHeight() - 60
-	if self.position.y > groundH then
-		self.position.y = groundH
+function Player:update(dt)
+	self.onPlatform = nil -- will be updated
+
+	self.position.x = self.position.x + self.velocity.x * dt
+	self.position.y = self.position.y + self.velocity.y * dt
+end
+
+function Player:collision(item, dx, dy)
+	self.position.y = self.position.y + dy
+	self.position.x = self.position.x + dx
+
+	if dy~=0 and sign(self.velocity.y) ~= sign(dy) then
 		self.velocity.y = 0
-		self.jumping = false
+		if dy < 0 then 
+			self.onPlatform = item 
+		end
 	end
+	if dx and sign(self.velocity.x) ~= sign(dx) then self.velocity.x = 0 end
 end
 
 function Player:moveLeft()
@@ -33,12 +41,12 @@ function Player:moveRight()
 end
 
 function Player:jump()
-	if not self.jumping then
+	if self.onPlatform then
 		self.velocity.y = -self.JUMP_POWER
-		self.jumping = true
+		self.onPlatform = nil
 	end
 end
 
 function Player:getBBox()
-	return self.position.x + 12, self.position.y + 9, 24, 39
+	return self.position.x + 16, self.position.y + 10, 16, 38
 end
