@@ -4,7 +4,8 @@ require ("class")
 Player = {}
 setmetatable(Player, {__index = Actor})
 Player.SPEED = 180
-Player.JUMP_POWER = 500
+Player.JUMP_POWER = 600
+Player.type = "Player"
 
 local function sign(x)
 	return x < 0 and -1 or (x>0 and 1 or 0)
@@ -18,9 +19,15 @@ function Player:update(dt)
 end
 
 function Player:collision(item, dx, dy)
+	if item.type == "Player" then
+		if self.position.y < item.position.y and self.velocity.y > 0 then
+			item:explode()	
+		end
+	end
+
 	self.position.y = self.position.y + dy
 	self.position.x = self.position.x + dx
-
+	
 	if dy~=0 and sign(self.velocity.y) ~= sign(dy) then
 		self.velocity.y = 0
 		if dy < 0 then 
@@ -49,4 +56,11 @@ end
 
 function Player:getBBox()
 	return self.position.x + 16, self.position.y + 10, 16, 38
+end
+
+function Player:explode()
+	World:bloodExplosion(self.position.x, self.position.y)
+	
+	self.position.x = 200;
+	self.position.y = 200;
 end

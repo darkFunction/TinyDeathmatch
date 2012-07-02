@@ -4,8 +4,9 @@ require("TiledMapLoader")
 
 World = {}
 
-World.GRAVITY = 1000
+World.GRAVITY = 1600
 World.actors = {}
+World.effects = {}
 
 function World:load()
 	
@@ -38,7 +39,7 @@ function World:newPlayer(x, y)
 	local p = Player:new()
 	p.position.x = x;
 	p.position.y = y;
-	return p
+return p
 end
 
 function World:newPlatform(x, y)
@@ -60,7 +61,7 @@ function bump.collision(item1, item2, dx, dy)
 end
 
 function bump.shouldCollide(item1, item2)
-	if item1.type == "Actor" or item2.type == "Actor" then return true end
+	if item1.type == "Player" or item2.type == "Player" then return true end
 	return false
 end
 
@@ -83,4 +84,26 @@ function World:update(dt)
 	end	
 
 	bump.collide()
+
+	for i,effect in ipairs(self.effects) do
+		effect:update(dt)
+--		if effect:isEmpty() then table.remove(self.effects, effect) end
+	end
+
+end
+
+function World:bloodExplosion(x, y)
+	local image = love.graphics.newImage("assets/blood.png")
+	local effect = love.graphics.newParticleSystem(image, 200)
+	table.insert(self.effects, effect)
+	effect:setPosition(x,y)
+	effect:setParticleLife(10,100)
+	effect:setSpeed(50,300)
+	effect:setSizes(1.0)
+	effect:setEmissionRate(50)
+	effect:setLifetime(1)
+	effect:setSpread(360)
+	effect:setSpin(0,5,1)
+	effect:setGravity(self.GRAVITY)
+	effect:start()
 end

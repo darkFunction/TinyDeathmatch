@@ -16,7 +16,6 @@ function Renderer:init()
 	TiledMap_DrawNearCam(screenW/2, screenH/2)
 	self:drawGrid(fb)
 
-	love.graphics.setColor(255,255,255)
 	love.graphics.setCanvas()
 end
 
@@ -54,18 +53,27 @@ function Renderer:render(world)
 		end
 	end
 
+	for i,effect in ipairs(world.effects) do
+		love.graphics.draw(effect)
+	end
+
+
 	-- debug
 	--bump_debug.draw(0,0,800,600)
 end
 
 function Renderer:drawGrid()
-	local size = kTileSize
-	local pad = 5
+	local size = kTileSize / 4
+	local pad = 1
 
 	for x=0,screenW-size/2,size do
 		for y=0,screenH-size/2,size do
 			r,g,b,a = Assets.bgData:getPixel(x+size/2,y+size/2)
-			love.graphics.setColor(255,255,255,math.random(50))
+			if TiledMap_GetMapTile(math.floor(x / kTileSize), math.floor(y / kTileSize), 1) == 0 then
+				love.graphics.setColor(255,255,255,math.random(50)) 
+			else 
+				love.graphics.setColor(0,0,0,170+math.random(50))
+			end
 			love.graphics.rectangle(
 				"fill", 
 				x+pad, 
