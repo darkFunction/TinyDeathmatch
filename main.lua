@@ -20,4 +20,7 @@ function love.draw()
 end
 
 function love.keypressed(key, unicode)
+
+		World:bloodExplosion(500,200)
+
 end
