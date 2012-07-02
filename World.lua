@@ -10,7 +10,7 @@ World.effects = {}
 
 function World:load()
 	
-	self.player1 = self:newPlayer(love.graphics.getWidth()/2, love.graphics.getHeight()-90)
+	self.player1 = self:newPlayer(400, 20)
 	self.player2 = self:newPlayer(200,20)
 	table.insert(self.actors, self.player1)
 	table.insert(self.actors, self.player2)
@@ -27,10 +27,16 @@ function World:load()
 		for y=0, TiledMap_GetMapH() do
 			local tile = TiledMap_GetMapTile(x, y, 1)
 			if tile ~= kMapTileTypeEmpty then
-				local platform = self:newPlatform(x, y)
-					bump.add(platform)
-					--print("adding platform:", platform.getBBox())
+				bump.add( self:newPlatform(x, y) )
+
+				-- add extras at side for when char is slightly offscreen
+				if x == TiledMap_GetMapW()-1 then
+					bump.add( self:newPlatform(x+1,y) )
+				elseif x == 0 then
+					bump.add( self:newPlatform(x-1,y) )
+				end
 			end
+			if platform ~= nil then bump.add(platform) end
 		end
 	end
 end
@@ -97,10 +103,10 @@ function World:bloodExplosion(x, y)
 	local effect = love.graphics.newParticleSystem(image, 200)
 	table.insert(self.effects, effect)
 	effect:setPosition(x,y)
-	effect:setParticleLife(0.05,0.5)
+	effect:setParticleLife(0.1,0.5)
 	effect:setSpeed(20,200)
-	effect:setSizes(1.0)
-	effect:setEmissionRate(1500)
+	effect:setSizes(1.7,0.5)
+	effect:setEmissionRate(4500)
 	effect:setLifetime(0.1)
 	effect:setSpread(50)
 	effect:setSpin(0,5,1)

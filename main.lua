@@ -21,6 +21,6 @@ end
 
 function love.keypressed(key, unicode)
 
-		World:bloodExplosion(500,200)
+		--World:bloodExplosion(500,550)
 
 end
