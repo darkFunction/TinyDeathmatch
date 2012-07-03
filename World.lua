@@ -5,6 +5,7 @@ require("TiledMapLoader")
 World = {}
 
 World.GRAVITY = 1600
+local NUM_CLOUDS = 6
 World.actors = {}
 World.effects = {}
 World.clouds = {}
@@ -41,7 +42,7 @@ function World:load()
 		end
 	end
 
-	for i=0,3 do 
+	for i=0,NUM_CLOUDS do 
 		self:newCloud(false)
 	end
 
@@ -57,7 +58,7 @@ function World:newCloud(offscreen)
 		x = sx,
 		y = 0 + math.random(150),
 		scale = size,
-		speed = -30 - (size*10),
+		speed = -(size*size*30),
 		flip = (math.random(2)==1),
 		width = Assets.imageCloud:getWidth()*size
 	}
