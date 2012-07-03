@@ -4,19 +4,25 @@ require ("TiledMapLoader")
 local bump_debug = require ("bump_debug")
 
 Renderer = {}
-local canvas = nil
+local bgCanvas = nil
+local fgCanvas = nil
 local screenW = love.graphics.getWidth()
 local screenH = love.graphics.getHeight()
 
 function Renderer:init()
-	canvas = love.graphics.newCanvas()
-	love.graphics.setCanvas(canvas)
+	bgCanvas = love.graphics.newCanvas()
+	fgCanvas = love.graphics.newCanvas()
 
+	love.graphics.setCanvas(bgCanvas)
 	love.graphics.draw(Assets.bg, 0, 0)
+	self:drawGrid()
+
+	love.graphics.setCanvas(fgCanvas)
 	TiledMap_DrawNearCam(screenW/2, screenH/2)
-	self:drawGrid(fb)
+	self:drawGrid()
 
 	love.graphics.setCanvas()
+
 end
 
 function Renderer:update(dx)
@@ -25,8 +31,20 @@ end
 
 function Renderer:render(world)
 
-	love.graphics.draw(canvas, 0, 0)
+	love.graphics.draw(bgCanvas, 0, 0)
 
+	for cloud,b in pairs(world.clouds) do
+		love.graphics.setColor(255,255,255,180 - (cloud.scale*80))
+		if not cloud.flip then
+			love.graphics.draw(Assets.imageCloud, cloud.x, cloud.y, 0, cloud.scale, cloud.scale, 0, 0)
+		else
+			love.graphics.draw(Assets.imageCloud, cloud.x, cloud.y, 0, -cloud.scale, cloud.scale, Assets.imageCloud:getWidth(), 0)
+		end
+	end
+	love.graphics.setColor(255,255,255,255) 
+
+	love.graphics.draw(fgCanvas, 0, 0)
+		
 	for i,player in ipairs(world.actors) do
 		local pPos = player.position
 		local pAnim = Assets.animations[player]["run"]
@@ -53,10 +71,9 @@ function Renderer:render(world)
 		end
 	end
 
-	for i,effect in ipairs(world.effects) do
+	for effect,b in pairs(world.effects) do
 		love.graphics.draw(effect)
 	end
-
 
 	-- debug
 	--bump_debug.draw(0,0,800,600)

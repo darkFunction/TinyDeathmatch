@@ -7,6 +7,7 @@ World = {}
 World.GRAVITY = 1600
 World.actors = {}
 World.effects = {}
+World.clouds = {}
 
 function World:load()
 	
@@ -39,6 +40,29 @@ function World:load()
 			if platform ~= nil then bump.add(platform) end
 		end
 	end
+
+	for i=0,3 do 
+		self:newCloud(false)
+	end
+
+end
+
+function World:newCloud(offscreen)
+	local size = 0.5 + math.random()
+	local sx =  math.random(love.graphics.getWidth())
+	if offscreen then 
+		sx = love.graphics.getWidth()
+	end
+	local cloud = {
+		x = sx,
+		y = 0 + math.random(150),
+		scale = size,
+		speed = -30 - (size*10),
+		flip = (math.random(2)==1),
+		width = Assets.imageCloud:getWidth()*size
+	}
+	self.clouds[cloud] = true
+	return cloud
 end
 
 function World:newPlayer(x, y)
@@ -91,9 +115,21 @@ function World:update(dt)
 
 	bump.collide()
 
-	for i,effect in ipairs(self.effects) do
+	for effect,b in pairs(self.effects) do
 		effect:update(dt)
---		if effect:isEmpty() then table.remove(self.effects, effect) end
+		if effect:isEmpty() then self.effects[effect] = nil end
+	end
+
+	local remove = {}
+	for cloud,b in pairs(self.clouds) do
+		cloud.x = cloud.x + cloud.speed*dt;
+		if cloud.x < -cloud.width then
+			table.insert(remove,cloud)
+			self:newCloud(true)
+		end
+	end
+	for i,cloud in ipairs(remove) do
+		self.clouds[cloud] = nil
 	end
 
 end
@@ -101,7 +137,7 @@ end
 function World:bloodExplosion(x, y)
 	local image = love.graphics.newImage("assets/blood.png")
 	local effect = love.graphics.newParticleSystem(image, 200)
-	table.insert(self.effects, effect)
+	self.effects[effect] = true
 	effect:setPosition(x,y)
 	effect:setParticleLife(0.1,0.5)
 	effect:setSpeed(20,200)
