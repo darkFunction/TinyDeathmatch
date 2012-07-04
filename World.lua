@@ -56,7 +56,7 @@ function World:newCloud(offscreen)
 	end
 	local cloud = {
 		x = sx,
-		y = 0 + math.random(150),
+		y = -(size/2) + math.random(120),
 		scale = size,
 		speed = -(size*size*30),
 		flip = (math.random(2)==1),

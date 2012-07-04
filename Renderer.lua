@@ -88,9 +88,11 @@ function Renderer:drawGrid()
 			r,g,b,a = Assets.bgData:getPixel(x+size/2,y+size/2)
 			if TiledMap_GetMapTile(math.floor(x / kTileSize), math.floor(y / kTileSize), 1) == 0 then
 				love.graphics.setColor(255,255,255,math.random(50)) 
-			else 
-				love.graphics.setColor(0,0,0,170+math.random(50))
+			else
+				i = 10 + math.random(35)
+				love.graphics.setColor(i,100,i,255)--170+math.random(50))
 			end
+
 			love.graphics.rectangle(
 				"fill", 
 				x+pad, 

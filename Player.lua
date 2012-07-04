@@ -4,7 +4,7 @@ require ("class")
 Player = {}
 setmetatable(Player, {__index = Actor})
 Player.SPEED = 180
-Player.JUMP_POWER = 600
+Player.JUMP_POWER = 580
 Player.type = "Player"
 Player.size = {w = 48, h = 48}
 
