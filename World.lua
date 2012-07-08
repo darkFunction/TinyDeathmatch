@@ -4,7 +4,7 @@ require("TiledMapLoader")
 
 World = {}
 
-World.GRAVITY = 1600
+World.GRAVITY = 2200
 local NUM_CLOUDS = 6
 World.actors = {}
 World.effects = {}
@@ -15,9 +15,9 @@ function World:load()
 	self.player1 = self:newPlayer(400, 20)
 	self.player2 = self:newPlayer(200,20)
 	table.insert(self.actors, self.player1)
-	table.insert(self.actors, self.player2)
+	--table.insert(self.actors, self.player2)
 
-	TiledMap_Load("assets/Level1.tmx", nil, nil, "assets/")
+	TiledMap_Load("assets/Level1.tmx", 48, nil, "assets/")
 	
 	bump.initialize(kTileSize)
 	for i,player in ipairs(self.actors) do

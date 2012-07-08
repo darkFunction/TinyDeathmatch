@@ -15,11 +15,11 @@ function Renderer:init()
 
 	love.graphics.setCanvas(bgCanvas)
 	love.graphics.draw(Assets.bg, 0, 0)
-	self:drawGrid()
+	--self:drawGrid()
 
 	love.graphics.setCanvas(fgCanvas)
 	TiledMap_DrawNearCam(screenW/2, screenH/2)
-	self:drawGrid()
+	--self:drawGrid()
 
 	love.graphics.setCanvas()
 
@@ -88,9 +88,9 @@ function Renderer:drawGrid()
 			r,g,b,a = Assets.bgData:getPixel(x+size/2,y+size/2)
 			if TiledMap_GetMapTile(math.floor(x / kTileSize), math.floor(y / kTileSize), 1) == 0 then
 				love.graphics.setColor(255,255,255,math.random(50)) 
-			else
-				i = 10 + math.random(35)
-				love.graphics.setColor(i,100,i,255)--170+math.random(50))
+			--else
+			--	i = 10 + math.random(35)
+			--	love.graphics.setColor(i,100,i,255)--170+math.random(50))
 			end
 
 			love.graphics.rectangle(

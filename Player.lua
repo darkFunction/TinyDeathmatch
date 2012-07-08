@@ -3,8 +3,11 @@ require ("class")
 
 Player = {}
 setmetatable(Player, {__index = Actor})
-Player.SPEED = 180
-Player.JUMP_POWER = 580
+local SPEED = 240
+local JUMP_POWER = 655
+local JUMP_TOLERANCE = 0.10
+local MAX_FALL_SPEED = 620
+
 Player.type = "Player"
 Player.size = {w = 48, h = 48}
 
@@ -14,8 +17,9 @@ end
 
 function Player:update(dt)
 	self.onPlatform = nil -- will be updated
+	self.timeOffPlatform = self.timeOffPlatform + dt
 
-	-- screen wrap
+	-- screen wrap 
 	local w = self.size.w
 	if self.position.x < 0-w then 
 		self.position.x = love.graphics.getWidth()
@@ -24,7 +28,7 @@ function Player:update(dt)
 	end
 
 	-- apply velocity
-	if self.velocity.y > 540 then self.velocity.y = 540 end
+	if self.velocity.y > MAX_FALL_SPEED then self.velocity.y = MAX_FALL_SPEED end
 	self.position.x = self.position.x + self.velocity.x * dt
 	self.position.y = self.position.y + self.velocity.y * dt
 end
@@ -33,7 +37,7 @@ function Player:collision(item, dx, dy)
 	if item.type == "Player" then
 		if self.position.y < item.position.y and self.velocity.y > 0 then
 			item:explode()	
-			self.velocity.y = -self.JUMP_POWER
+			self.velocity.y = -JUMP_POWER/2
 		end
 	end
 
@@ -44,24 +48,25 @@ function Player:collision(item, dx, dy)
 		self.velocity.y = 0
 		if dy < 0 then 
 			self.onPlatform = item 
+			self.timeOffPlatform = 0
 		end
 	end
 	if dx and sign(self.velocity.x) ~= sign(dx) then self.velocity.x = 0 end
 end
 
 function Player:moveLeft()
-	self.velocity.x = -self.SPEED
+	self.velocity.x = -SPEED
 	self.facing = "left"
 end
 
 function Player:moveRight()
-	self.velocity.x = self.SPEED
+	self.velocity.x = SPEED
 	self.facing = "right"
 end
 
 function Player:jump()
-	if self.onPlatform then
-		self.velocity.y = -self.JUMP_POWER
+	if self.timeOffPlatform < JUMP_TOLERANCE then
+		self.velocity.y = -JUMP_POWER
 		self.onPlatform = nil
 	end
 end

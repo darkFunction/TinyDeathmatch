@@ -8,7 +8,8 @@ function Actor:new()
 		velocity = {x=0, y=0},
 		facing = "left",
 		state = 0,
-		onPlatform = nil
+		onPlatform = nil,
+		timeOffPlatform = 0
 	}
     setmetatable( newinst, { __index = self } )
     return newinst
